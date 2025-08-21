@@ -4,7 +4,7 @@
 import pandas as pd
 
 # Constants (settings, paths etc)
-CSV_NAME_NO_EXT = "selling_data_raw" # without .csv
+CSV_NAME_NO_EXT = "selling_overview" # without .csv
 CSV_FOLDER_PATH = "01_data_prep/results"
 
 # Script

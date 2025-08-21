@@ -10,7 +10,7 @@ SELLING_HTML_PATH = (
     + "Toko  Online - Produk Lengkap & Harga Terbaik ｜ Tokopedia (8_21_2025 10：58：57 AM)"
     + ".html"
 )
-CSV_RESULT_NAME_NO_EXT = "selling_data_raw" # without .csv
+CSV_RESULT_NAME_NO_EXT = "selling_overview" # without .csv
 CSV_RESULT_FOLDER_PATH = "01_data_prep/results"
 
 # Script
@@ -99,7 +99,7 @@ title_list = []
 author_list = []
 title_author_separable = True # assume true until proven false
 price_list = []
-img_base64_list = []
+thumb_base64_list = []
 
 for price_tag in price_tags:
     cur_price = price_int_from_str(price_tag.text)
@@ -121,27 +121,27 @@ for price_tag in price_tags:
     elif title_author_separable:
         title_author_separable = False
 
-    parent_with_img = parent_with_title.parent
+    parent_with_thumb = parent_with_title.parent
     parent_with_title.decompose()
     # Delete that entire tag. Why?
     # 1. We're done with it, and
     # 2. it has some misleading, irrelevant image file
-    cur_img_tag = parent_with_img.find("img") # only one image now
-    cur_img_data = cur_img_tag["src"]
-    img_base64_list.append(cur_img_data)
+    cur_thumb_tag = parent_with_thumb.find("img") # only one image now
+    cur_thumb_data = cur_thumb_tag["src"]
+    thumb_base64_list.append(cur_thumb_data)
 
 if title_author_separable:
     results_dict = {
         "title": title_list,
         "author": author_list,
         "price": price_list,
-        "img_base64": img_base64_list
+        "thumb_base64": thumb_base64_list
     }
 else:
     results_dict = {
         "title_author": title_author_list,
         "price": price_list,
-        "img_base64": img_base64_list
+        "thumb_base64": thumb_base64_list
     }
 
 new_df = pd.DataFrame(results_dict)

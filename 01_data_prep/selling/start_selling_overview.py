@@ -1,3 +1,5 @@
+# The first scraping script for selling data
+
 # Imports
 from bs4 import BeautifulSoup, NavigableString
 import re

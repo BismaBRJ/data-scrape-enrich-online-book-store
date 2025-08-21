@@ -119,8 +119,10 @@ for price_tag in price_tags:
     cur_title_author_list = cur_title_author.split(" - ")
     if (len(cur_title_author_list) == 2):
         cur_title, cur_author = cur_title_author_list
-        title_list.append(cur_title)
-        author_list.append(cur_author)
+        equal_space_title = re.sub(r"\s+", " ", cur_title)
+        equal_space_author = re.sub(r"\s+", " ", cur_author)
+        title_list.append(equal_space_title.rstrip())
+        author_list.append(equal_space_author.lstrip())
     elif title_author_separable:
         title_author_separable = False
 

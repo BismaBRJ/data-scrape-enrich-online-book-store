@@ -32,8 +32,8 @@ elif (("title" in overview_cols) and
     title_list = list(overview_df["title"])
     author_list = list(overview_df["author"])
     title_author_list = [
-        title_list[i] + " - " + author_list[i]
-        for i in range(overview_rowlen)
+        title + " - " + author
+        for title, author in zip(title_list, author_list)
     ]
     print(title_author_list)
 else:

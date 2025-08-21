@@ -1,6 +1,8 @@
 # project-specific
 01_data_prep/shop_html/
 
+# Python
+__pycache__/
+
 # macOS
 .DS_Store
-*/.DS_Store

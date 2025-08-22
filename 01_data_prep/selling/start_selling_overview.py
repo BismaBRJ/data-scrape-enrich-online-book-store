@@ -1,26 +1,23 @@
 # The first scraping script for selling data
 
 # Imports
-import os
+from pathlib import Path
 from bs4 import BeautifulSoup, NavigableString
 import re
 import pandas as pd
-from my_utils import price_int_from_str
+from utils_prep_selling import price_int_from_str
 
 # Constants (settings, paths etc)
-SELLING_HTML_FILE_PATH = os.path.join(
-    "01_data_prep/shop_html/",
+SELLING_HTML_FILE_PATH = (
+    Path(__file__).parent.parent / "shop_html" /
     "Toko  Online - Produk Lengkap & Harga Terbaik ｜ Tokopedia (8_21_2025 10：58：57 AM)"
-    + ".html"
-)
-CSV_RESULT_NAME_NO_EXT = "selling_overview" # without .csv
-CSV_RESULT_FOLDER_PATH = "01_data_prep/results/"
+).with_suffix(".html")
+CSV_RESULT_NAME = "selling_overview" # with or without .csv
+CSV_RESULT_FOLDER_PATH = Path(__file__).parent.parent / "results"
 
 # Script
 
-with open(SELLING_HTML_FILE_PATH, "r") as file:
-    html_text = file.read()
-
+html_text = SELLING_HTML_FILE_PATH.read_text()
 soup = BeautifulSoup(html_text, "html.parser")
 
 # Plan:
@@ -151,10 +148,9 @@ else:
 
 new_df = pd.DataFrame(results_dict)
 
-final_path = os.path.join(
-    CSV_RESULT_FOLDER_PATH,
-    CSV_RESULT_NAME_NO_EXT + ".csv"
-)
+final_path = (
+    CSV_RESULT_FOLDER_PATH / CSV_RESULT_NAME
+).with_suffix(".csv")
 print("Saving to:")
 print(final_path)
 new_df.to_csv(final_path, index=False)

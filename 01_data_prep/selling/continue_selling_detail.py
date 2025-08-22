@@ -2,24 +2,23 @@
 # to be run after the first (start_selling_overview)
 
 # Imports
-import os
+from pathlib import Path
 import pandas as pd
 import re
 from bs4 import BeautifulSoup
 
 # Constants (settings, paths etc)
 WITH_SLIDERS_IMG = True
-SELLING_HTML_FOLDER_PATH = "01_data_prep/shop_html/"
-OVERVIEW_RESULT_NAME_NO_EXT = "selling_overview" # without .csv
-DETAIL_RESULT_NAME_NO_EXT = "selling_detail"
-CSV_RESULT_FOLDER_PATH = "01_data_prep/results/"
+SELLING_HTML_FOLDER_PATH = Path(__file__).parent.parent / "shop_html"
+OVERVIEW_RESULT_NAME = "selling_overview" # with or without .csv
+DETAIL_RESULT_NAME = "selling_detail"
+CSV_RESULT_FOLDER_PATH = Path(__file__).parent.parent / "results"
 
 # Script
 
-overview_path = os.path.join(
-    CSV_RESULT_FOLDER_PATH,
-    OVERVIEW_RESULT_NAME_NO_EXT + ".csv"
-)
+overview_path = (
+    CSV_RESULT_FOLDER_PATH / OVERVIEW_RESULT_NAME
+).with_suffix(".csv")
 overview_df = pd.read_csv(overview_path)
 overview_cols = overview_df.columns
 overview_rowlen = len(overview_df)
@@ -38,13 +37,12 @@ else:
     print("Error: cannot identify title and/or author column(s)")
     title_author_list = None # expect errors from this point on
 
-html_file_names = []
+#html_file_names = []
 html_file_paths = []
-for filename in os.listdir(SELLING_HTML_FOLDER_PATH):
-    full_path = os.path.join(SELLING_HTML_FOLDER_PATH, filename)
-    if os.path.isfile(full_path):
-        html_file_names.append(filename)
-        html_file_paths.append(full_path)
+for full_file_path in SELLING_HTML_FOLDER_PATH.iterdir():
+    if full_file_path.is_file():
+        #html_file_names.append(full_file_path.name)
+        html_file_paths.append(full_file_path)
 
 desc_list = []
 if WITH_SLIDERS_IMG:
@@ -55,19 +53,19 @@ for title_author in title_author_list:
         html_file_path
         for html_file_path in html_file_paths
         if  (
-                (title_author in html_file_path)
+                (title_author in html_file_path.name)
                 or
                 (
                     title_author.replace(":", "：")
                     # special character since : is not
                     # allowed for file names on macOS
-                    in html_file_path
+                    in html_file_path.name
                 )
                 or
                 (
                     title_author.replace(":", "：").replace("*", "＊")
                     # similar situation for the asterisk I guess
-                    in html_file_path
+                    in html_file_path.name
                 )
             )
     ]
@@ -83,9 +81,7 @@ for title_author in title_author_list:
         print("Selecting first one...")
         cur_html_file_path = match_html_file_paths[0]
 
-    with open(cur_html_file_path, "r") as cur_file:
-        cur_html_text = cur_file.read()
-    
+    cur_html_text = cur_html_file_path.read_text()
     cur_soup = BeautifulSoup(cur_html_text, "html.parser")
 
     cur_desc_tag = cur_soup.find(
@@ -138,10 +134,9 @@ detail_df = detail_df[new_cols]
 if WITH_SLIDERS_IMG:
     detail_df["sliders_base64"] = sliders_base64_list
 
-detail_path = os.path.join(
-    CSV_RESULT_FOLDER_PATH,
-    DETAIL_RESULT_NAME_NO_EXT + ".csv"
-)
+detail_path = (
+    CSV_RESULT_FOLDER_PATH / DETAIL_RESULT_NAME
+).with_suffix(".csv")
 print("Saving to:")
 print(detail_path)
 detail_df.to_csv(detail_path, index=False)

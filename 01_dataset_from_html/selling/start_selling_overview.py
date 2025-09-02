@@ -4,7 +4,7 @@
 from pathlib import Path
 from bs4 import BeautifulSoup, NavigableString
 import re
-import pandas as pd
+import polars as pl
 from utils_prep_selling import price_int_from_str
 
 # Constants (settings, paths etc)
@@ -146,12 +146,12 @@ else:
         "thumb_base64": thumb_base64_list
     }
 
-new_df = pd.DataFrame(results_dict)
+new_df = pl.DataFrame(results_dict)
 
 final_path = (
     CSV_RESULT_FOLDER_PATH / CSV_RESULT_NAME
 ).with_suffix(".csv")
 print("Saving to:")
 print(final_path)
-new_df.to_csv(final_path, index=False)
+new_df.write_csv(final_path)
 print("Saved")

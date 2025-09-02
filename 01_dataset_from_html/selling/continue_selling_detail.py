@@ -3,7 +3,7 @@
 
 # Imports
 from pathlib import Path
-import pandas as pd
+import polars as pl
 import re
 from bs4 import BeautifulSoup
 
@@ -19,7 +19,7 @@ CSV_RESULT_FOLDER_PATH = Path(__file__).parent.parent / "results"
 overview_path = (
     CSV_RESULT_FOLDER_PATH / OVERVIEW_RESULT_NAME
 ).with_suffix(".csv")
-overview_df = pd.read_csv(overview_path)
+overview_df = pl.read_csv(overview_path, glob=False)
 overview_cols = overview_df.columns
 overview_rowlen = len(overview_df)
 
@@ -116,28 +116,34 @@ for title_author in title_author_list:
     #print("=" * 10)
     #print(cur_imgs_base64_list[-1])
 
-detail_df = overview_df.copy()
-detail_df["desc"] = desc_list
-# swap thumb_base64 column with desc column
-ori_cols = list(detail_df.columns)
-ori_idx_thumb, ori_idx_desc = (
-    ori_cols.index("thumb_base64"),
-    ori_cols.index("desc")
+detail_df = overview_df.with_columns(
+    pl.Series("desc", desc_list)
 )
+# swap thumb_base64 column with desc column
+ori_cols = detail_df.columns
+ori_idx_thumb = ori_cols.index("thumb_base64")
+ori_idx_desc = ori_cols.index("desc")
 new_cols = ori_cols.copy()
 new_cols[ori_idx_thumb], new_cols[ori_idx_desc] = (
     ori_cols[ori_idx_desc],
     ori_cols[ori_idx_thumb]
 )
-detail_df = detail_df[new_cols]
+detail_df = detail_df.select(new_cols)
 
 if WITH_SLIDERS_IMG:
-    detail_df["sliders_base64"] = sliders_base64_list
+    detail_df = detail_df.with_columns(
+        pl.Series(
+            "sliders_base64",
+            map(str, sliders_base64_list)
+            # list[list[...]] to list[str]
+            # that is, the list[...] is converted to str
+        )
+    )
 
 detail_path = (
     CSV_RESULT_FOLDER_PATH / DETAIL_RESULT_NAME
 ).with_suffix(".csv")
 print("Saving to:")
 print(detail_path)
-detail_df.to_csv(detail_path, index=False)
+detail_df.write_csv(detail_path)
 print("Saved")

@@ -1,17 +1,18 @@
-# The second scraping script for selilng data,
-# to be run after the first (start_selling_overview)
+# The second scraping script for review data,
+# to be run after the first (start_reviews_overview)
 
 # Imports
 from pathlib import Path
 import polars as pl
 import re
 from bs4 import BeautifulSoup
+from utils_prep_reviews import price_int_from_str
 
 # Constants (settings, paths etc)
 WITH_SLIDERS_IMG = True
 SELLING_HTML_FOLDER_PATH = Path(__file__).parent.parent / "shop_html"
-OVERVIEW_RESULT_NAME = "selling_overview" # with or without .csv
-DETAIL_RESULT_NAME = "selling_detail"
+OVERVIEW_RESULT_NAME = "reviews_overview" # with or without .csv
+DETAIL_RESULT_NAME = "reviews_detail"
 CSV_RESULT_FOLDER_PATH = Path(__file__).parent.parent / "results"
 
 # Script
@@ -42,6 +43,7 @@ for full_file_path in SELLING_HTML_FOLDER_PATH.iterdir():
     if full_file_path.is_file():
         html_file_paths.append(full_file_path)
 
+price_list = []
 desc_list = []
 if WITH_SLIDERS_IMG:
     sliders_base64_list = []
@@ -78,9 +80,16 @@ for title_author in title_author_list:
         print("They are:", match_html_file_paths)
         print("Selecting first one...")
         cur_html_file_path = match_html_file_paths[0]
-
+    
     cur_html_text = cur_html_file_path.read_text()
     cur_soup = BeautifulSoup(cur_html_text, "html.parser")
+
+    cur_price_tag = cur_soup.find(
+        "div",
+        attrs = {"data-testid": "lblPDPDetailProductPrice"}
+    )
+    cur_price = price_int_from_str(cur_price_tag.text)
+    price_list.append(cur_price)
 
     cur_desc_tag = cur_soup.find(
         "div",
@@ -110,29 +119,31 @@ for title_author in title_author_list:
     
     sliders_base64_list.append(tuple(cur_imgs_base64_list))
 
+rating_col_idx = overview_cols.index("rating")
+detail_cols = (
+    overview_cols[:rating_col_idx] +
+    ["price", "desc"] +
+    overview_cols[rating_col_idx:]
+)
 detail_df = overview_df.with_columns(
+    pl.Series("price", price_list),
     pl.Series("desc", desc_list)
 )
-# swap thumb_base64 column with desc column
-ori_cols = detail_df.columns
-ori_idx_thumb = ori_cols.index("thumb_base64")
-ori_idx_desc = ori_cols.index("desc")
-new_cols = ori_cols.copy()
-new_cols[ori_idx_thumb], new_cols[ori_idx_desc] = (
-    ori_cols[ori_idx_desc],
-    ori_cols[ori_idx_thumb]
-)
-detail_df = detail_df.select(new_cols)
+detail_df = detail_df.select(detail_cols)
 
 if WITH_SLIDERS_IMG:
+    detail_cols = (
+        detail_cols[:-1] +
+        ["sliders_base64"] +
+        [detail_cols[-1]]
+    )
     detail_df = detail_df.with_columns(
         pl.Series(
             "sliders_base64",
             map(str, sliders_base64_list)
-            # list[list[...]] to list[str]
-            # that is, the list[...] is converted to str
         )
     )
+    detail_df = detail_df.select(detail_cols)
 
 detail_path = (
     CSV_RESULT_FOLDER_PATH / DETAIL_RESULT_NAME

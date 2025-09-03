@@ -7,13 +7,14 @@ import re
 import polars as pl
 
 # Constants (settings, paths etc)
+REMOVE_UNSEPARABLE = True
 REVIEWS_HTML_FOLDER_PATH = Path(__file__).parent.parent / "shop_html"
 REVIEWS_HTML_FILE_NAMES = [ # with or without .html
     "reviews01 Toko  Online - Produk Lengkap & Harga Terbaik (8_13_2025 11：43：47 PM)",
     "reviews02 Toko  Online - Produk Lengkap & Harga Terbaik (8_13_2025 11：44：06 PM)",
     "reviews03 Toko  Online - Produk Lengkap & Harga Terbaik (8_13_2025 11：44：25 PM)"
 ]
-CSV_RESULT_NAME = "reviews_overview" # with or without .csv
+CSV_RESULT_NAME = "reviews_sep_overview" # with or without .csv
 CSV_RESULT_FOLDER_PATH = Path(__file__).parent.parent / "results"
 
 # Script
@@ -40,7 +41,6 @@ for html_name in REVIEWS_HTML_FILE_NAMES:
     for product_link_tag in product_link_tags:
         title_author_tag = product_link_tag.find("p")
         cur_title_author = title_author_tag.text
-        title_author_list.append(cur_title_author)
 
         cur_title_author_list = cur_title_author.split(" - ")
         if (len(cur_title_author_list) == 2):
@@ -49,9 +49,12 @@ for html_name in REVIEWS_HTML_FILE_NAMES:
             equal_space_author = re.sub(r"\s+", " ", cur_author)
             title_list.append(equal_space_title.rstrip())
             author_list.append(equal_space_author.lstrip())
+        elif REMOVE_UNSEPARABLE:
+            continue # skip this row
         elif title_author_separable:
             title_author_separable = False
 
+        title_author_list.append(cur_title_author)
         product_link_tag.find("span").decompose()
         # there is an irrelevant image in there
 

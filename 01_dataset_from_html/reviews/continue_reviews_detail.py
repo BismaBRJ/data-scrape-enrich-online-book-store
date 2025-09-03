@@ -11,8 +11,8 @@ from utils_prep_reviews import price_int_from_str
 # Constants (settings, paths etc)
 WITH_SLIDERS_IMG = True
 SELLING_HTML_FOLDER_PATH = Path(__file__).parent.parent / "shop_html"
-OVERVIEW_RESULT_NAME = "reviews_overview" # with or without .csv
-DETAIL_RESULT_NAME = "reviews_detail"
+OVERVIEW_RESULT_NAME = "reviews_sep_overview" # with or without .csv
+DETAIL_RESULT_NAME = "reviews_sep_detail"
 CSV_RESULT_FOLDER_PATH = Path(__file__).parent.parent / "results"
 
 # Script

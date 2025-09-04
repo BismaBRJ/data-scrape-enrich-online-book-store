@@ -1,5 +1,7 @@
-# Simple code to see the similarity score of
-# any two embeddings from any given CSV
+"""
+Simple code to see the similarity score of
+any two embeddings from any given CSV
+"""
 
 # Imports
 from pathlib import Path

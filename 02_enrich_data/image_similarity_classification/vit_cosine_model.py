@@ -4,7 +4,7 @@ image similarity classification model:
 a ViT (Vision Transformer) for vector embeddings/encoding,
 followed by the calculation of cosine similarity.
 Later the threshold is determined with
-either the ROC curve or the Precision-Recall curve.
+either the Precision-Recall curve or linear SVM's decision boundary.
 
 Possible error I know of:
 Something something SSL certificate, preceded by something like

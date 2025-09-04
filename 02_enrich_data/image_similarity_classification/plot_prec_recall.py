@@ -16,6 +16,9 @@ NPY_FOLDER_PATH = (
 )
 POS_TRUTH_NPY_NAME = "all_pos_sim_scores" # with or without .npy
 NEG_TRUTH_NPY_NAME = "all_neg_sim_scores"
+SAVE_PLOT_PATH = (
+    Path(__file__).parent / "prec_recall_test"
+).with_suffix(".png")
 
 # Script
 
@@ -37,4 +40,5 @@ display = PrecisionRecallDisplay.from_predictions(
     name="vit_b_32 embeddings", plot_chance_level=True, despine=True
 )
 _ = display.ax_.set_title("2-class Precision-Recall curve")
+plt.savefig(SAVE_PLOT_PATH)
 plt.show()

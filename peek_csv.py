@@ -10,6 +10,7 @@ CSV_FOLDER_PATH = (
     Path(__file__).parent /
     "01_dataset_from_html" / "results"
 )
+PRINT_COLS = ["title", "author"]
 
 # Script
 
@@ -19,7 +20,9 @@ print("File exists:", final_path.is_file())
 peek_df = pl.read_csv(final_path, glob=False)
 print("CSV opened.")
 print(peek_df)
-#print("CSV head:")
-#print(peek_df.head())
 print("CSV columns:")
 print(peek_df.columns)
+
+for col_name in PRINT_COLS:
+    print("Column:", col_name)
+    print(pl.Series(peek_df.select(col_name)).to_list())

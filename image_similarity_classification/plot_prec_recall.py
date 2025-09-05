@@ -28,12 +28,16 @@ neg_path = (NPY_FOLDER_PATH / NEG_TRUTH_NPY_NAME).with_suffix(".npy")
 pos_arr = np.load(pos_path)
 neg_arr = np.load(neg_path)
 print(".npy files opened")
+print("pos_arr.shape:", pos_arr.shape)
+print("neg_arr.shape:", neg_arr.shape)
 
 pos_n = len(pos_arr)
 neg_n = len(neg_arr)
 
 all_arr = np.hstack((pos_arr, neg_arr))
 truth_arr = np.hstack((np.ones(pos_n), np.zeros(neg_n)))
+print("all_arr.shape:", all_arr.shape)
+print("truth_arr.shape:", truth_arr.shape)
 
 display = PrecisionRecallDisplay.from_predictions(
     truth_arr, all_arr,

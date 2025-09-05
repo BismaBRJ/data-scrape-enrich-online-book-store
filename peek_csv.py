@@ -8,7 +8,7 @@ import polars as pl
 CSV_NAME = "reviews_sep_detail" # with or without .csv
 CSV_FOLDER_PATH = (
     Path(__file__).parent /
-    "01_dataset_from_html" / "results"
+    "dataset_from_html" / "results"
 )
 PRINT_COLS = ["title", "author"]
 

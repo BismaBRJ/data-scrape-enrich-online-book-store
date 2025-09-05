@@ -11,8 +11,8 @@ import polars as pl
 # Constants (settings, paths etc)
 CSV_SOURCE_NAME = "reviews_sep_detail" # with or without .csv
 CSV_SOURCE_FOLDER_PATH = (
-    Path(__file__).parent.parent.parent /
-    "01_dataset_from_html" / "results"
+    Path(__file__).parent.parent /
+    "dataset_from_html" / "results"
 )
 CSV_RESULT_NAME = "reviews_sep_detail_base64_1nf"
 CSV_RESULT_FOLDER_PATH = (

@@ -1,4 +1,4 @@
-# ML for Price Negotiation in Online Book Stores
+# Data Scraping and Enrichment from Online Book Stores
 
 Readme to be done.
 

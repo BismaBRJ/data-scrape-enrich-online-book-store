@@ -17,7 +17,7 @@ NPY_FOLDER_PATH = (
 POS_TRUTH_NPY_NAME = "all_pos_sim_scores" # with or without .npy
 NEG_TRUTH_NPY_NAME = "all_neg_sim_scores"
 SAVE_PLOT_PATH = (
-    Path(__file__).parent / "prec_recall_test"
+    Path(__file__).parent / "boxplot_scores"
 ).with_suffix(".png")
 
 # Script
@@ -32,4 +32,5 @@ print("pos_arr.shape:", pos_arr.shape)
 print("neg_arr.shape:", neg_arr.shape)
 
 sns.boxplot(data=[pos_arr, neg_arr])
+plt.savefig(SAVE_PLOT_PATH)
 plt.show()

@@ -2,9 +2,9 @@
 
 **Note:** This project is still ongoing. Stay tuned!
 
-It's quite a long story. I wanted to buy a certain book from some online book store on Tokopedia, an e-commerce platform. The book store tends to sell used books (only one copy each) at an interesting price: about half of the original price. With that in mind, even more interesting is that the store allows for price negotiation.
+It's quite a long story. I wanted to buy a certain book from some online book store on Tokopedia, an e-commerce platform. The book store tends to sell used books (only one copy each) at an interesting price: about half of the original price. With that in mind, even more interesting is that the store owner allows for the price to be bargained.
 
-Since I don't have much experience at negotiation, I wondered whether I can make use of my data science skills somehow. In the reviews, I can also see the product description and price, which presumably is the final price after negotiation, while the listed price of books currently up for sale is before negotiation (presumably, because no one has bought it yet so no negotiation has occurred). Those assumptions make sense to me, so I was thinking of making a machine learning model to predict the price before and after negotiation and also do some statistical analysis so that I can negotiate well-informed.
+Since I don't have much experience at bargaining, I wondered whether I can make use of my data science skills somehow. In the reviews, I can also see the product description and price, which presumably is the final price after bargained, while the listed price of books currently up for sale is before bargained (presumably, because no one has bought it yet so no bargained has occurred). Those assumptions make sense to me, so I was thinking of making a machine learning model to predict the price before and after bargained and also do some statistical analysis so that I can bargain well-informed.
 
 But wait. I don't have the data yet! Well, it's right there technically, but it's not in the nice CSV dataset format I'm familiar with from data science courses at uni.
 
